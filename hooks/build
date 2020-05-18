@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+rootdir="$(dirname $BASH_SOURCE)/.."
+
+get_project() {
+  name="$1"
+  cat "$rootdir/projects.txt" | grep "^$name "
+}
+
+get_registry() {
+  project="$1"
+  registry_type="$(echo "$project" | awk '{print $2}')"
+  case "$registry_type" in
+    gcr)
+      echo "gcr.io"
+      ;;
+    *)
+      echo "Unsupported registry: $registry_type"
+      exit 1
+      ;;
+  esac
+}
+
+get_namespace() {
+  project="$1"
+  echo "$project" | awk '{print $3}'
+}
+
+get_base_image() {
+  name="${DOCKER_REPO##*/}"
+  project="$(get_project "$name")"
+  registry="$(get_registry "$project")"
+  namespace="$(get_namespace "$project")"
+
+  echo "$registry/$namespace/$name:$DOCKER_TAG"
+}
+
+docker build --build-arg BASE_IMAGE="$(get_base_image)" -t $IMAGE_NAME .
