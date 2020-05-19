@@ -1,0 +1,16 @@
+language: go
+
+go:
+  - 1.13
+
+script:
+  - make clean
+  - |
+    case "$TRAVIS_BRANCH" in
+      version-checker)
+        make check_new_versions
+        ;;
+      repo-creator)
+        make create_repositories
+        ;;
+    esac
