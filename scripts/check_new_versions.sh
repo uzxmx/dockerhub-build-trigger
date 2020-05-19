@@ -50,7 +50,7 @@ trigger_dockerhub_build() {
 check_gcr() {
   local name=$1
   local namespace=$2
-  get_gcr_image_tags | filter_versions $name | trigger_dockerhub_build $name
+  get_gcr_image_tags $name $namespace | filter_versions $name | trigger_dockerhub_build $name
 }
 
 while read name registry namespace; do
