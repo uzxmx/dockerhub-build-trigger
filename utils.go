@@ -60,14 +60,13 @@ func getVersions(readFromStdin bool, args []string) []string {
 // parseVersions parses an array of versions with string format to
 // semver.Version format.
 func parseVersions(versions []string) (parsed []*wrappedVersion) {
-	parsed = make([]*wrappedVersion, len(versions))
-	for i, version := range versions {
+	for _, version := range versions {
 		v, err := semver.NewVersion(version)
 		if err != nil {
 			log.Errorf("Failed to parse version: %v (%s)", err, version)
+		} else {
+			parsed = append(parsed, &wrappedVersion{v, version})
 		}
-
-		parsed[i] = &wrappedVersion{v, version}
 	}
 	return
 }
