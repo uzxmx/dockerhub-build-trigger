@@ -4,29 +4,7 @@ set -eo pipefail
 
 rootdir="$(dirname $BASH_SOURCE)/.."
 
-get_project() {
-  name="$1"
-  cat "$rootdir/projects.txt" | grep "^$name "
-}
-
-get_registry() {
-  project="$1"
-  registry_type="$(echo "$project" | awk '{print $2}')"
-  case "$registry_type" in
-    gcr)
-      echo "gcr.io"
-      ;;
-    *)
-      echo "Unsupported registry: $registry_type"
-      exit 1
-      ;;
-  esac
-}
-
-get_namespace() {
-  project="$1"
-  echo "$project" | awk '{print $3}'
-}
+source "$rootdir/scripts/utils.sh"
 
 get_base_image() {
   name="${DOCKER_REPO##*/}"
