@@ -5,3 +5,4 @@ pause gcr google-containers
 kube-apiserver gcr google-containers
 kubernetes-dashboard-amd64 gcr google-containers
 kube-scheduler gcr google-containers
+k8s-dns-node-cache gcr google-containers
