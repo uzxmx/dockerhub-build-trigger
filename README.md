@@ -12,6 +12,29 @@ repositories observe tag events and parse them to build new versions for images.
 
 For immediate checking and building, you can also run scripts from local.
 
+## TOC
+
+* [Why this repo](#why-this-repo)
+* [No image or versions found](#no-image-or-versions-found)
+* [Run manually from local](#run-manually-from-local)
+  * [Mirror a specific version for an image](#mirror-a-specific-version-for-an-image)
+* [Magic branches](#magic-branches)
+
+## Why this repo
+
+* Access to `gcr.io` from China is blocked.
+* [mirrorgooglecontainers](https://hub.docker.com/u/mirrorgooglecontainers) and
+  [kubeimage](https://hub.docker.com/u/kubeimage) in dockerhub haven't provided latest or all
+  needed images.
+* `gcr.azk8s.cn` is no longer for public access (see [here](https://github.com/Azure/container-service-for-azure-china/issues/58)).
+* `gcr.mirrors.ustc.edu.cn` seems not working.
+* [anjia0532/gcr.io_mirror](https://github.com/anjia0532/gcr.io_mirror) is no
+  longer maintained, and it relies on Travis CI's docker pulling and pushing,
+  may overuse Travis CI's resources.
+* Luckily, dockerhub still can be accessed from China, and for more fast pulling
+  speed, we can also use `docker.mirrors.ustc.edu.cn` etc. as a mirror of
+  dockerhub.
+
 ## No image or versions found
 
 If you cannot find an image in [dockerhub](https://hub.docker.com/u/mirror4gcr),
