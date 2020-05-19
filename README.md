@@ -28,6 +28,7 @@ For immediate checking and building, you can also run scripts from local.
   needed images.
 * `gcr.azk8s.cn` is no longer for public access (see [here](https://github.com/Azure/container-service-for-azure-china/issues/58)).
 * `gcr.mirrors.ustc.edu.cn` seems not working.
+* Mirror from aliyun requires login, inconvenient.
 * [anjia0532/gcr.io_mirror](https://github.com/anjia0532/gcr.io_mirror) is no
   longer maintained, and it relies on Travis CI's docker pulling and pushing,
   may overuse Travis CI's resources.
