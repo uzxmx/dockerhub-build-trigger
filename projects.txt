@@ -1,3 +1,4 @@
 kube-proxy gcr google-containers
 cluster-proportional-autoscaler-amd64 gcr google-containers
 pause-amd64 gcr google-containers
+pause gcr google-containers
