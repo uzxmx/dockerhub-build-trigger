@@ -20,6 +20,6 @@ create_repositories: build
 .PHONY: create_repositories
 
 clean:
-	rm bin/utils
+	rm -f bin/utils
 
 .PHONY: clean
