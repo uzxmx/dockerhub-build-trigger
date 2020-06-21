@@ -84,7 +84,7 @@ func findMaxN(versions []string, n int) (maxn []*wrappedVersion) {
 
 // findAllGreaterThan finds all versions which are greater than the
 // target version.
-func findAllGreaterThan(versions []string, target string, sorting bool) (result []*wrappedVersion) {
+func findAllGreaterThan(versions []string, target string, sorting, ascending bool) (result []*wrappedVersion) {
 	parsed := parseVersions(versions)
 	t, err := semver.NewVersion(target)
 	if err != nil {
@@ -96,9 +96,23 @@ func findAllGreaterThan(versions []string, target string, sorting bool) (result 
 		}
 	}
 	if sorting {
-		sort.Sort(sort.Reverse(wrappedVersions(result)))
+		doSort(result, ascending)
 	}
 	return
+}
+
+func sortVersions(versions []string, ascending bool) (result []*wrappedVersion) {
+	result = parseVersions(versions)
+	doSort(result, ascending)
+	return
+}
+
+func doSort(result []*wrappedVersion, ascending bool) {
+	if ascending {
+		sort.Sort(wrappedVersions(result))
+	} else {
+		sort.Sort(sort.Reverse(wrappedVersions(result)))
+	}
 }
 
 func createRepos(user string, names []string) error {
@@ -155,6 +169,7 @@ func main() {
 		targetVersion   string
 		readFromStdin   bool
 		sorting         bool
+		ascending       bool
 		numberOfMaximum int
 		user            string
 	)
@@ -180,7 +195,7 @@ func main() {
 		Use:   "gt",
 		Short: "Find all versions which are greater than the specified version",
 		Run: func(cmd *cobra.Command, args []string) {
-			versions := findAllGreaterThan(getVersions(readFromStdin, args), targetVersion, sorting)
+			versions := findAllGreaterThan(getVersions(readFromStdin, args), targetVersion, sorting, ascending)
 			for _, v := range versions {
 				fmt.Println(v.OriginalVersion)
 			}
@@ -188,9 +203,25 @@ func main() {
 	}
 	flags = cmd.Flags()
 	flags.BoolVar(&readFromStdin, "from-stdin", false, "Whether to read from stdin")
-	flags.BoolVarP(&sorting, "sort", "s", false, "Whether to sort the results (with DESCENDING order)")
+	flags.BoolVarP(&sorting, "sort", "s", false, "Whether to sort the results (with DESCENDING order by default)")
+	flags.BoolVar(&ascending, "asc", false, "Sort the results with ASCENDING order, --sort must also be specified")
 	flags.StringVarP(&targetVersion, "target-version", "t", "", "Target version to compare")
 	cmd.MarkFlagRequired("target-version")
+	rootCmd.AddCommand(cmd)
+
+	cmd = &cobra.Command{
+		Use:   "sort",
+		Short: "Sort all versions, DESCENDING order by default",
+		Run: func(cmd *cobra.Command, args []string) {
+			versions := sortVersions(getVersions(readFromStdin, args), ascending)
+			for _, v := range versions {
+				fmt.Println(v.OriginalVersion)
+			}
+		},
+	}
+	flags = cmd.Flags()
+	flags.BoolVar(&readFromStdin, "from-stdin", false, "Whether to read from stdin")
+	flags.BoolVar(&ascending, "asc", false, "Sort with ASCENDING order")
 	rootCmd.AddCommand(cmd)
 
 	cmd = &cobra.Command{
