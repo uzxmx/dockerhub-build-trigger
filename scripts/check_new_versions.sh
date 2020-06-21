@@ -47,16 +47,23 @@ trigger_dockerhub_build() {
   for version in $versions; do
     info $version
     git tag "$name/$version"
+
+    # If we push many tags one time, dockerhub may not pick up all. So instead
+    # we push one tag one time. We also sleep some time to avoid putting much
+    # pressure to github and dockerhub.
+    git push --tags
+    sleep 2
   done
 
-  git push --tags
   info "Finished to trigger dockerhub build for $name"
 }
 
 check_gcr() {
   local name=$1
   local namespace=$2
+  info "Check gcr for $name"
   get_gcr_image_tags $name $namespace | filter_versions $name | trigger_dockerhub_build $name
+  info "Finished checking gcr for $name"
 }
 
 while read name registry namespace; do
