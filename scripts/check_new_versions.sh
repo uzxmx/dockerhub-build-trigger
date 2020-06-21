@@ -6,6 +6,12 @@ rootdir="$(dirname $BASH_SOURCE)/.."
 
 source "$rootdir/scripts/utils.sh"
 
+if [ -n "$TRAVIS_GITHUB_TOKEN" ]; then
+  git config --global user.email "travis@travis-ci.org"
+  git config --global user.name "Travis CI"
+  git remote set-url origin https://${TRAVIS_GITHUB_TOKEN}@github.com/uzxmx/dockerhub-build-trigger.git
+fi
+
 get_local_max_version() {
   local name=$1
   git tag -l "$name/*" | sed "s/^$name\///" | utils max --from-stdin
