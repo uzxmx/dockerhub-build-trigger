@@ -10,7 +10,7 @@ build: bin/utils
 .PHONY: build
 
 check_new_versions: build
-	PATH=$(rootdir)/bin:$$PATH ./scripts/check_new_versions.sh
+	PATH=$(rootdir)/bin:$$PATH ./scripts/check_new_versions.sh -s
 
 .PHONY: check_new_versions
 
