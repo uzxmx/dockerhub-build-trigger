@@ -3,6 +3,8 @@ language: go
 go:
   - 1.13
 
+if: branch IN (version-checker, repo-creator)
+
 script:
   - make clean
   - |
