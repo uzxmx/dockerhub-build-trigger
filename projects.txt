@@ -1,1 +1,9 @@
+kube-proxy github kubernetes/kubernetes k8s.gcr.io
+cluster-proportional-autoscaler-amd64 gcr google-containers
+pause-amd64 gcr google-containers
+pause gcr google-containers
 kube-apiserver github kubernetes/kubernetes k8s.gcr.io
+kubernetes-dashboard-amd64 gcr google-containers
+kube-scheduler github kubernetes/kubernetes k8s.gcr.io
+k8s-dns-node-cache gcr google-containers
+kube-controller-manager github kubernetes/kubernetes k8s.gcr.io
