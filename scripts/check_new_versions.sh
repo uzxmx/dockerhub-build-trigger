@@ -80,6 +80,7 @@ trigger_dockerhub_build() {
   local name=$1
   shift
 
+  local versions
   if [ -p /dev/stdin ]; then
     versions=$(cat /dev/stdin)
   else
@@ -122,10 +123,41 @@ check_gcr() {
   info "Finished checking gcr for $name"
 }
 
+check_github() {
+  local name=$1
+  local namespace=$2
+  local i=1
+  local page_size=100
+  local tags
+  local tmpfile=$(mktemp)
+  local curl_opts=()
+  if [ -n "$TRAVIS_GITHUB_TOKEN" ]; then
+    curl_opts+=("-H" "Authorization: token $TRAVIS_GITHUB_TOKEN")
+  fi
+  info "Check github for $name"
+  while true; do
+    tags=$(curl "${curl_opts[@]}" -s "https://api.github.com/repos/$namespace/tags?page=$i&per_page=$page_size" | jq -r '.[].name')
+    echo "$tags" >> "$tmpfile"
+    if [ "$(echo "$tags" | wc -l)" -eq "$page_size" ]; then
+      i=$((i + 1))
+      # Sleep some time to avoid exceeding ratelimit.
+      sleep 0.5
+    else
+      break
+    fi
+  done
+  cat "$tmpfile" | filter_versions $name | trigger_dockerhub_build $name
+  info "Finished checking github for $name"
+  rm "$tmpfile"
+}
+
 while read name registry namespace; do
   case "$registry" in
     gcr)
       check_gcr $name $namespace
+      ;;
+    github)
+      check_github $name $namespace
       ;;
     *)
       error "Unsupported registry: $registry"

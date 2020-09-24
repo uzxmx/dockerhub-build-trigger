@@ -9,10 +9,7 @@ source "$rootdir/scripts/utils.sh"
 get_base_image() {
   name="${DOCKER_REPO##*/}"
   project="$(get_project "$name")"
-  registry="$(get_registry "$project")"
-  namespace="$(get_namespace "$project")"
-
-  echo "$registry/$namespace/$name:$DOCKER_TAG"
+  echo "$(get_docker_repo "$name" "$project"):$DOCKER_TAG"
 }
 
 docker build --build-arg BASE_IMAGE="$(get_base_image)" -t $IMAGE_NAME .
