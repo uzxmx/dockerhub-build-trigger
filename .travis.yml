@@ -10,6 +10,8 @@ script:
   - |
     case "$TRAVIS_BRANCH" in
       version-checker)
+        # Travis uses a shallow clone with `--depth=50`, so we need to fetch all remote tags by ourselves.
+        git fetch --tags
         make check_new_versions
         ;;
       repo-creator)
